@@ -34,7 +34,7 @@ services.AddDbContext<ClaimsContext>(
 
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 services.AddEndpointsApiExplorer();
-services.AddSwaggerGen();
+services.AddSwaggerGen(options => options.EnableAnnotations());
 
 services.AddServices();
 

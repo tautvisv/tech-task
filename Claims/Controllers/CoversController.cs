@@ -3,6 +3,7 @@ using Claims.Controllers.Models;
 using Claims.Domain.Models;
 using Claims.Domain.Services;
 using Microsoft.AspNetCore.Mvc;
+using Swashbuckle.AspNetCore.Annotations;
 
 namespace Claims.Controllers;
 
@@ -20,6 +21,7 @@ public class CoversController : ControllerBase
     }
 
     [HttpGet]
+    [SwaggerOperation(Summary = "Get all covers", Description = "Retrieves a list of all available covers.")]
     public async Task<ActionResult<IEnumerable<CoverDto>>> GetAsync()
     {
         var covers = await _service.GetCoversAsync();
@@ -28,6 +30,7 @@ public class CoversController : ControllerBase
     }
 
     [HttpGet("{id}")]
+    [SwaggerOperation(Summary = "Get a cover by ID", Description = "Retrieves details of a specific cover by its ID.")]
     public async Task<ActionResult<CoverDto>> GetAsync(string id)
     {
         var cover = await _service.GetCoverAsync(id);
@@ -36,6 +39,7 @@ public class CoversController : ControllerBase
     }
 
     [HttpPost]
+    [SwaggerOperation(Summary = "Create a new cover", Description = "Creates a new cover and returns the created cover details.")]
     public async Task<ActionResult<CoverDto>> CreateAsync(NewCoverDto request)
     {
         var newCover = _mapper.Map<NewCoverDto, NewCover>(request);
@@ -45,6 +49,7 @@ public class CoversController : ControllerBase
     }
 
     [HttpDelete("{id}")]
+    [SwaggerOperation(Summary = "Delete a cover", Description = "Deletes an existing cover by its ID.")]
     public async Task<ActionResult> DeleteAsync(string id)
     {
        await _service.DeleteCoverAsync(id);

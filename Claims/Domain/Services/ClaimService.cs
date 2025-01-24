@@ -1,7 +1,5 @@
-﻿using Claims.Auditing;
-using Claims.Controllers;
+﻿using Claims.Controllers;
 using Claims.Domain.Models;
-using Claims.Infrastructure.Messaging;
 using Claims.Utils;
 
 namespace Claims.Domain.Services
