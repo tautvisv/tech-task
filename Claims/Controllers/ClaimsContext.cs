@@ -7,8 +7,7 @@ namespace Claims.Controllers
 {
     public class ClaimsContext : DbContext
     {
-
-        private DbSet<Claim> Claims { get; init; }
+        public DbSet<Claim> Claims { get; init; }
         public DbSet<Cover>  Covers { get; init; }
 
         public ClaimsContext(DbContextOptions options)

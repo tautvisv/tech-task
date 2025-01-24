@@ -1,8 +1,6 @@
-﻿using Claims.Domain.Models;
-
-namespace Claims.Controllers.Models
+﻿namespace Claims.Domain.Models
 {
-    public class NewClaimDto
+    public class NewClaim
     {
         public string CoverId { get; set; }
         public string Name { get; set; }

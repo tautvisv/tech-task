@@ -1,6 +1,7 @@
 using AutoMapper;
-using Claims.Auditing;
 using Claims.Controllers.Models;
+using Claims.Domain.Models;
+using Claims.Domain.Services;
 using Microsoft.AspNetCore.Mvc;
 
 
@@ -10,51 +11,45 @@ namespace Claims.Controllers
     [Route("[controller]")]
     public class ClaimsController : ControllerBase
     {
-        private readonly ILogger<ClaimsController> _logger;
-        private readonly ClaimsContext _claimsContext;
-        private readonly Auditer _auditer;
+        private readonly IClaimService _service;
         private readonly IMapper _mapper;
 
-        public ClaimsController(ILogger<ClaimsController> logger, ClaimsContext claimsContext, AuditContext auditContext)
+        public ClaimsController(IClaimService service, IMapper mapper)
         {
-            _logger = logger;
-            _claimsContext = claimsContext;
-            _auditer = new Auditer(auditContext);
+            _service = service ?? throw new ArgumentNullException(nameof(service));
+            _mapper = mapper ?? throw new ArgumentNullException(nameof(mapper));
         }
 
         [HttpGet]
         public async Task<ActionResult<IEnumerable<ClaimDto>>> GetAsync()
         {
-            IEnumerable<Claim> claims = await _claimsContext.GetClaimsAsync();
-            return Ok(claims);
+            var claims = await _service.GetClaimsAsync();
+            var result = _mapper.Map<IEnumerable<Claim>, IEnumerable<ClaimDto>>(claims);
+            return Ok(result);
         }
 
         [HttpPost]
         public async Task<ActionResult<ClaimDto>> CreateAsync(NewClaimDto request)
         {
-            var claim = new Claim
-            {
-                Name = request.Name,
-            };
-            claim.Id = Guid.NewGuid().ToString();
-            await _claimsContext.AddItemAsync(claim);
-            _auditer.AuditClaim(claim.Id, "POST");
-            return Ok(claim);
+            var newClaim = _mapper.Map<NewClaimDto, NewClaim>(request);
+            var claim = await _service.CreateClaimAsync(newClaim);
+            var result = _mapper.Map<Claim, ClaimDto>(claim);
+            return Ok(result);
         }
 
         [HttpDelete("{id}")]
         public async Task<ActionResult> DeleteAsync(string id)
         {
-            _auditer.AuditClaim(id, "DELETE");
-            await _claimsContext.DeleteItemAsync(id);
+            await _service.DeleteClaimAsync(id);
             return NoContent();
         }
 
         [HttpGet("{id}")]
         public async Task<ActionResult<ClaimDto>> GetAsync(string id)
         {
-            var claim = await _claimsContext.GetClaimAsync(id);
-            return Ok(claim);
+            var claim = await _service.GetClaimAsync(id);
+            var result = _mapper.Map<Claim, ClaimDto>(claim);
+            return Ok(result);
         }
     }
 }

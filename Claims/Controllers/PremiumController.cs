@@ -1,7 +1,6 @@
-using Claims.Auditing;
-using Claims.Controllers.Models;
+using Claims.Domain.Models;
+using Claims.Domain.Services;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
 
 namespace Claims.Controllers;
 
@@ -9,48 +8,17 @@ namespace Claims.Controllers;
 [Route("[controller]")]
 public class PremiumController : ControllerBase
 {
-    public PremiumController()
+    private readonly IPremiumService _service;
+    public PremiumController(IPremiumService service)
     {
+        _service = service ?? throw new ArgumentNullException(nameof(service));
     }
 
     [HttpGet("{coverType}")]
     [ProducesResponseType(typeof(decimal), 200)]
     public async Task<IActionResult> ComputePremiumAsync([FromRoute] CoverType coverType, DateTime startDate, DateTime endDate)
     {
-        return Ok(ComputePremium(startDate, endDate, coverType));
+        var premiumValue = await _service.ComputePremiumAsync(startDate, endDate, coverType);
+        return Ok(premiumValue);
     }
-
-    private decimal ComputePremium(DateTime startDate, DateTime endDate, CoverType coverType)
-    {
-        var multiplier = 1.3m;
-        if (coverType == CoverType.Yacht)
-        {
-            multiplier = 1.1m;
-        }
-
-        if (coverType == CoverType.PassengerShip)
-        {
-            multiplier = 1.2m;
-        }
-
-        if (coverType == CoverType.Tanker)
-        {
-            multiplier = 1.5m;
-        }
-
-        var premiumPerDay = 1250 * multiplier;
-        var insuranceLength = (endDate - startDate).TotalDays;
-        var totalPremium = 0m;
-
-        for (var i = 0; i < insuranceLength; i++)
-        {
-            if (i < 30) totalPremium += premiumPerDay;
-            if (i < 180 && coverType == CoverType.Yacht) totalPremium += premiumPerDay - premiumPerDay * 0.05m;
-            else if (i < 180) totalPremium += premiumPerDay - premiumPerDay * 0.02m;
-            if (i < 365 && coverType != CoverType.Yacht) totalPremium += premiumPerDay - premiumPerDay * 0.03m;
-            else if (i < 365) totalPremium += premiumPerDay - premiumPerDay * 0.08m;
-        }
-
-        return totalPremium;
-    }
-}
+} 

@@ -1,3 +1,4 @@
+using Claims;
 using Claims.Auditing;
 using Claims.Controllers;
 using Microsoft.EntityFrameworkCore;
@@ -7,8 +8,9 @@ using System.Text.Json.Serialization;
 
 var builder = WebApplication.CreateBuilder(args);
 
+var services = builder.Services;
 // Add services to the container.
-builder.Services
+services
     .AddControllers()
     .AddJsonOptions(x =>
     {
@@ -18,10 +20,10 @@ builder.Services
 var environmentName = builder.Environment.EnvironmentName;
 builder.Configuration.AddJsonFile($"appsettings.{environmentName}.json", optional: true);
 
-builder.Services.AddAutoMapper(typeof(Program).Assembly);
+services.AddAutoMapper(typeof(Program).Assembly);
 
-builder.Services.AddDbContext<AuditContext>(options => options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
-builder.Services.AddDbContext<ClaimsContext>(
+services.AddDbContext<AuditContext>(options => options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
+services.AddDbContext<ClaimsContext>(
     options =>
     {
         var client = new MongoClient(builder.Configuration.GetConnectionString("MongoDb"));
@@ -31,8 +33,10 @@ builder.Services.AddDbContext<ClaimsContext>(
 );
 
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
-builder.Services.AddEndpointsApiExplorer();
-builder.Services.AddSwaggerGen();
+services.AddEndpointsApiExplorer();
+services.AddSwaggerGen();
+
+services.AddServices();
 
 var app = builder.Build();
 
