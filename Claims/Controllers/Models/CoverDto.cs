@@ -1,4 +1,6 @@
-﻿namespace Claims.Controllers.Models
+﻿using Claims.Domain.Models;
+
+namespace Claims.Controllers.Models
 {
     public class CoverDto
     {

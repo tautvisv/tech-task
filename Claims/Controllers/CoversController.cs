@@ -1,3 +1,4 @@
+using AutoMapper;
 using Claims.Auditing;
 using Claims.Controllers.Models;
 using Microsoft.AspNetCore.Mvc;
@@ -10,28 +11,31 @@ namespace Claims.Controllers;
 public class CoversController : ControllerBase
 {
     private readonly ClaimsContext _claimsContext;
-    private readonly ILogger _logger;
     private readonly Auditer _auditer;
+    private readonly IMapper _mapper;
 
-    public CoversController(ClaimsContext claimsContext, AuditContext auditContext, ILogger<CoversController> logger)
+    public CoversController(ClaimsContext claimsContext, AuditContext auditContext, ILogger<CoversController> logger, IMapper mapper)
     {
         _claimsContext = claimsContext;
-        _logger = logger;
         _auditer = new Auditer(auditContext);
+        _mapper = mapper ?? throw new ArgumentNullException(nameof(mapper));
     }
 
     [HttpGet]
     public async Task<ActionResult<IEnumerable<CoverDto>>> GetAsync()
     {
-        var results = await _claimsContext.Covers.ToListAsync();
-        return Ok(results);
+        var covers = await _claimsContext.Covers.ToListAsync();
+        var resilt = _mapper.Map<IEnumerable<Cover>, IEnumerable<CoverDto>>(covers);
+        return Ok(resilt);
     }
 
     [HttpGet("{id}")]
     public async Task<ActionResult<CoverDto>> GetAsync(string id)
     {
-        var results = await _claimsContext.Covers.ToListAsync();
-        return Ok(results.SingleOrDefault(cover => cover.Id == id));
+        var covers = await _claimsContext.Covers.ToListAsync();
+        var cover = covers.SingleOrDefault(cover => cover.Id == id);
+        var result = _mapper.Map<Cover, CoverDto>(cover);
+        return Ok(result);
     }
 
     [HttpPost]
@@ -43,7 +47,8 @@ public class CoversController : ControllerBase
         _claimsContext.Covers.Add(cover);
         await _claimsContext.SaveChangesAsync();
         _auditer.AuditCover(cover.Id, "POST");
-        return Ok(cover);
+        var result = _mapper.Map<Cover, CoverDto>(cover);
+        return Ok(result);
     }
 
     [HttpDelete("{id}")]

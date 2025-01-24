@@ -1,3 +1,4 @@
+using AutoMapper;
 using Claims.Auditing;
 using Claims.Controllers.Models;
 using Microsoft.AspNetCore.Mvc;
@@ -12,6 +13,7 @@ namespace Claims.Controllers
         private readonly ILogger<ClaimsController> _logger;
         private readonly ClaimsContext _claimsContext;
         private readonly Auditer _auditer;
+        private readonly IMapper _mapper;
 
         public ClaimsController(ILogger<ClaimsController> logger, ClaimsContext claimsContext, AuditContext auditContext)
         {

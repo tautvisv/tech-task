@@ -2,7 +2,6 @@
 {
     public class NewCoverDto
     {
-        public string Id { get; set; }
         public DateTime StartDate { get; set; }
         public DateTime EndDate { get; set; }
         public CoverType Type { get; set; }
