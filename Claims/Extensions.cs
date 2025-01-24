@@ -1,7 +1,7 @@
-﻿using Claims.Auditing;
-using Claims.Domain.Models;
+﻿using Claims.Domain.Models;
 using Claims.Domain.Repositories;
 using Claims.Domain.Services;
+using Claims.Infrastructure;
 using Claims.Infrastructure.Messaging;
 using Claims.Utils;
 

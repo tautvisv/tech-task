@@ -1,5 +1,5 @@
-﻿using Claims.Controllers;
-using Claims.Domain.Models;
+﻿using Claims.Domain.Models;
+using Claims.Infrastructure.Persistance;
 using Claims.Utils;
 
 namespace Claims.Domain.Services

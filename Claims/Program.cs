@@ -1,6 +1,5 @@
 using Claims;
-using Claims.Auditing;
-using Claims.Controllers;
+using Claims.Infrastructure.Persistance;
 using Microsoft.EntityFrameworkCore;
 using MongoDB.Driver;
 using System.Text.Json.Serialization;

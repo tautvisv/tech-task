@@ -1,7 +1,7 @@
-﻿using Claims.Auditing;
-using Claims.Controllers;
-using Claims.Domain.Models;
+﻿using Claims.Domain.Models;
 using Claims.Domain.Repositories;
+using Claims.Infrastructure;
+using Claims.Infrastructure.Persistance;
 
 namespace Claims.Domain.Services
 {

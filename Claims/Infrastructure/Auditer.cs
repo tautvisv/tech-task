@@ -1,6 +1,8 @@
-﻿using Claims.Utils;
+﻿using Claims.Infrastructure.Persistance;
+using Claims.Infrastructure.Persistance.Models;
+using Claims.Utils;
 
-namespace Claims.Auditing
+namespace Claims.Infrastructure
 {
     public class Auditer
     {
@@ -25,7 +27,7 @@ namespace Claims.Auditing
             _auditContext.Add(claimAudit);
             _auditContext.SaveChanges();
         }
-        
+
         public void AuditCover(string id, string httpRequestType)
         {
             var coverAudit = new CoverAudit()

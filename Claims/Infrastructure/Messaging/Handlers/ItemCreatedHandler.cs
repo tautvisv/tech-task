@@ -1,5 +1,4 @@
-﻿using Claims.Auditing;
-using Claims.Infrastructure.Messaging.Models;
+﻿using Claims.Infrastructure.Messaging.Models;
 using MediatR;
 
 namespace Claims.Infrastructure.Messaging.Handlers

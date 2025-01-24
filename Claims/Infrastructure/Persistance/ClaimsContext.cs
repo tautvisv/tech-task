@@ -2,13 +2,12 @@
 using Microsoft.EntityFrameworkCore;
 using MongoDB.EntityFrameworkCore.Extensions;
 
-
-namespace Claims.Controllers
+namespace Claims.Infrastructure.Persistance
 {
     public class ClaimsContext : DbContext
     {
         public DbSet<Claim> Claims { get; init; }
-        public DbSet<Cover>  Covers { get; init; }
+        public DbSet<Cover> Covers { get; init; }
 
         public ClaimsContext(DbContextOptions options)
             : base(options)

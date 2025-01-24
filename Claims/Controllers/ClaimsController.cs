@@ -5,7 +5,6 @@ using Claims.Domain.Services;
 using Microsoft.AspNetCore.Mvc;
 using Swashbuckle.AspNetCore.Annotations;
 
-
 namespace Claims.Controllers
 {
     [ApiController]
