@@ -15,8 +15,7 @@ public class PremiumController : ControllerBase
     }
 
     [HttpGet("{coverType}")]
-    [ProducesResponseType(typeof(decimal), 200)]
-    public async Task<IActionResult> ComputePremiumAsync([FromRoute] CoverType coverType, DateTime startDate, DateTime endDate)
+    public async Task<ActionResult<decimal>> ComputePremiumAsync([FromRoute] CoverType coverType, DateTime startDate, DateTime endDate)
     {
         var premiumValue = await _service.ComputePremiumAsync(startDate, endDate, coverType);
         return Ok(premiumValue);

@@ -1,19 +1,23 @@
-﻿namespace Claims.Auditing
+﻿using Claims.Utils;
+
+namespace Claims.Auditing
 {
     public class Auditer
     {
         private readonly AuditContext _auditContext;
+        private readonly IDateTimeService _dateTimeService;
 
-        public Auditer(AuditContext auditContext)
+        public Auditer(AuditContext auditContext, IDateTimeService dateTimeService)
         {
-            _auditContext = auditContext;
+            _auditContext = auditContext ?? throw new ArgumentNullException(nameof(auditContext));
+            _dateTimeService = dateTimeService ?? throw new ArgumentNullException(nameof(dateTimeService));
         }
 
         public void AuditClaim(string id, string httpRequestType)
         {
             var claimAudit = new ClaimAudit()
             {
-                Created = DateTime.Now,
+                Created = _dateTimeService.GetCurrentTime(),
                 HttpRequestType = httpRequestType,
                 ClaimId = id
             };
@@ -26,7 +30,7 @@
         {
             var coverAudit = new CoverAudit()
             {
-                Created = DateTime.Now,
+                Created = _dateTimeService.GetCurrentTime(),
                 HttpRequestType = httpRequestType,
                 CoverId = id
             };

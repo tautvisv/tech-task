@@ -2,7 +2,7 @@
 {
     public interface IAuditPublisher
     {
-        Task PublishCreatedAsync(string id);
-        Task PublishDeletedAsync(string id);
+        Task PublishClaimCreatedAsync(string id);
+        Task PublishClaimDeletedAsync(string id);
     }
 }

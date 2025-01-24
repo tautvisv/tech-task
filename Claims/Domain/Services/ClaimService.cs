@@ -1,6 +1,8 @@
 ﻿using Claims.Auditing;
 using Claims.Controllers;
 using Claims.Domain.Models;
+using Claims.Infrastructure.Messaging;
+using Claims.Utils;
 
 namespace Claims.Domain.Services
 {
@@ -8,13 +10,15 @@ namespace Claims.Domain.Services
     {
         private readonly ILogger<ClaimService> _logger;
         private readonly ClaimsContext _claimsContext;
-        private readonly Auditer _auditer;
+        private readonly IAuditPublisher _auditPublisher;
+        private readonly IDateTimeService _dateTimeService;
 
-        public ClaimService(ILogger<ClaimService> logger, ClaimsContext claimsContext, Auditer auditer)
+        public ClaimService(ILogger<ClaimService> logger, ClaimsContext claimsContext, IAuditPublisher auditPublisher, IDateTimeService dateTimeService)
         {
             _logger = logger ?? throw new ArgumentNullException(nameof(logger));
             _claimsContext = claimsContext ?? throw new ArgumentNullException(nameof(claimsContext));
-            _auditer = auditer ?? throw new ArgumentNullException(nameof(auditer));
+            _auditPublisher = auditPublisher ?? throw new ArgumentNullException(nameof(auditPublisher));
+            _dateTimeService = dateTimeService ?? throw new ArgumentNullException(nameof(dateTimeService));
         }
 
         public async Task<IEnumerable<Claim>> GetClaimsAsync()
@@ -32,8 +36,7 @@ namespace Claims.Domain.Services
         public async Task<Claim> CreateClaimAsync(NewClaim newClaim)
         {
             var id = Guid.NewGuid().ToString();
-            // TODO: fix it
-            var created = DateTime.UtcNow;
+            var created = _dateTimeService.GetCurrentTime();
             var claim = new Claim
             {
                 Id = id,
@@ -46,13 +49,13 @@ namespace Claims.Domain.Services
                 DamageCost = newClaim.DamageCost,
             };
             await _claimsContext.AddItemAsync(claim);
-            _auditer.AuditClaim(claim.Id, "POST");
+            await _auditPublisher.PublishClaimCreatedAsync(id);
             return claim;
         }
 
         public async Task DeleteClaimAsync(string id)
         {
-            _auditer.AuditClaim(id, "DELETE");
+            await _auditPublisher.PublishClaimDeletedAsync(id);
             await _claimsContext.DeleteItemAsync(id);
         }
     }
