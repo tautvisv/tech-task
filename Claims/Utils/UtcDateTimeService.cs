@@ -2,7 +2,7 @@
 {
     public class UtcDateTimeService : IDateTimeService
     {
-        public DateTime GetCurrentTime()
+        public DateTime GetCurrentDateTime()
         {
             return DateTime.UtcNow;
         }

@@ -13,7 +13,7 @@ namespace Claims.Domain.Models
 
         [BsonElement("created")]
         [BsonDateTimeOptions(DateOnly = true)]
-        public DateTime Created { get; set; }
+        public DateOnly Created { get; set; }
 
         [BsonElement("name")]
         public string Name { get; set; }
@@ -21,6 +21,7 @@ namespace Claims.Domain.Models
         [BsonElement("claimType")]
         public ClaimType Type { get; set; }
 
+        // It is possible to use value objects for domain. For current functionality primitive types should be sufficient.
         [BsonElement("damageCost")]
         public decimal DamageCost { get; set; }
 
@@ -32,7 +33,7 @@ namespace Claims.Domain.Models
 
         }
 
-        private Claim(string id, string coverId, DateTime created, string name, ClaimType type, decimal damageCost)
+        private Claim(string id, string coverId, DateOnly created, string name, ClaimType type, decimal damageCost)
         {
             if (string.IsNullOrEmpty(id))
             {
@@ -44,9 +45,9 @@ namespace Claims.Domain.Models
                 throw new DomainValidationException("CoverId cannot be empty", nameof(coverId));
             }
 
-            if (damageCost < 0)
+            if (damageCost < 0 || damageCost > 100)
             {
-                throw new DomainValidationException("Damage cost must be zero or positive number", nameof(damageCost));
+                throw new DomainValidationException("Damage cost must be between 0 and 100", nameof(damageCost));
             }
 
             Id = id;
@@ -57,10 +58,10 @@ namespace Claims.Domain.Models
             DamageCost = damageCost;
         }
 
-        public static Claim Create(string coverId, DateTime created, string name, ClaimType type, decimal damageCost)
+        public static Claim Create(string coverId, DateOnly created, string name, ClaimType type, decimal damageCost)
         {
             var id = Guid.NewGuid().ToString();
-            return new Claim(id, coverId, created, name, type,damageCost);
+            return new Claim(id, coverId, created, name, type, damageCost);
         }
     }
 }

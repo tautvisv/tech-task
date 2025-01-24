@@ -20,7 +20,7 @@ namespace Claims.Infrastructure
         {
             var claimAudit = new ClaimAudit()
             {
-                Created = _dateTimeService.GetCurrentTime(),
+                Created = _dateTimeService.GetCurrentDateTime(),
                 HttpRequestType = httpRequestType.ToString(),
                 ClaimId = id
             };
@@ -33,7 +33,7 @@ namespace Claims.Infrastructure
         {
             var coverAudit = new CoverAudit()
             {
-                Created = _dateTimeService.GetCurrentTime(),
+                Created = _dateTimeService.GetCurrentDateTime(),
                 HttpRequestType = httpRequestType.ToString(),
                 CoverId = id
             };

@@ -10,11 +10,11 @@ public class Cover
 
     [BsonElement("startDate")]
     [BsonDateTimeOptions(DateOnly = true)]
-    public DateTime StartDate { get; private set; }
+    public DateOnly StartDate { get; private set; }
 
     [BsonElement("endDate")]
     [BsonDateTimeOptions(DateOnly = true)]
-    public DateTime EndDate { get; private set; }
+    public DateOnly EndDate { get; private set; }
 
     [BsonElement("claimType")]
     public CoverType Type { get; private set; }
@@ -30,7 +30,7 @@ public class Cover
         
     }
 
-    private Cover(string id, DateTime startDate, DateTime endDate, CoverType type, decimal premium)
+    private Cover(string id, DateOnly startDate, DateOnly endDate, CoverType type, decimal premium)
     {
         if (string.IsNullOrEmpty(id))
         {
@@ -42,6 +42,11 @@ public class Cover
             throw new DomainValidationException("Premium must be zero or positive number", nameof(premium));
         }
 
+        if(startDate.CompareTo(endDate) > 0)
+        {
+            throw new DomainValidationException("startDate must be before endDate", nameof(startDate));
+        }
+
         Id = id;
         StartDate = startDate;
         EndDate = endDate;
@@ -49,7 +54,12 @@ public class Cover
         Premium = premium;
     }
 
-    public static Cover Create(DateTime startDate, DateTime endDate, CoverType type, decimal premium)
+    public bool IsClaimDateValid(DateOnly date)
+    {
+        return StartDate <= date && EndDate >= date;
+    }
+
+    public static Cover Create(DateOnly startDate, DateOnly endDate, CoverType type, decimal premium)
     {
         string id = Guid.NewGuid().ToString();
         return new Cover(id, startDate, endDate, type, premium);

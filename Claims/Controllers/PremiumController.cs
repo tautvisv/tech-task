@@ -17,7 +17,7 @@ public class PremiumController : ControllerBase
 
     [HttpGet("{coverType}")]
     [SwaggerOperation(Summary = "Compute premium", Description = "Calculates the premium amount based on cover type and date range.")]
-    public async Task<ActionResult<decimal>> ComputePremiumAsync([FromRoute] CoverType coverType, DateTime startDate, DateTime endDate)
+    public async Task<ActionResult<decimal>> ComputePremiumAsync([FromRoute] CoverType coverType, DateOnly startDate, DateOnly endDate)
     {
         var premiumValue = await _service.ComputePremiumAsync(startDate, endDate, coverType);
         return Ok(premiumValue);

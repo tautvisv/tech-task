@@ -11,7 +11,7 @@ namespace Claims.Application.Services
             _logger = logger ?? throw new ArgumentNullException(nameof(logger));
         }
 
-        public Task<decimal> ComputePremiumAsync(DateTime startDate, DateTime endDate, CoverType coverType)
+        public Task<decimal> ComputePremiumAsync(DateOnly startDate, DateOnly endDate, CoverType coverType)
         {
             _logger.LogInformation("Stating to calculate premium for {coverType}", coverType);
 
@@ -22,7 +22,7 @@ namespace Claims.Application.Services
             return Task.FromResult(value);
         }
 
-        private decimal ComputePremium(DateTime startDate, DateTime endDate, CoverType coverType)
+        private decimal ComputePremium(DateOnly startDate, DateOnly endDate, CoverType coverType)
         {
             var multiplier = 1.3m;
             if (coverType == CoverType.Yacht)
@@ -41,7 +41,7 @@ namespace Claims.Application.Services
             }
 
             var premiumPerDay = 1250 * multiplier;
-            var insuranceLength = (endDate - startDate).TotalDays;
+            var insuranceLength = 1;//(endDate - startDate).TotalDays;
             var totalPremium = 0m;
 
             for (var i = 0; i < insuranceLength; i++)
