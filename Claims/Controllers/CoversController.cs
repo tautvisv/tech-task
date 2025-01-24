@@ -1,4 +1,5 @@
 using Claims.Auditing;
+using Claims.Controllers.Models;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
@@ -9,7 +10,7 @@ namespace Claims.Controllers;
 public class CoversController : ControllerBase
 {
     private readonly ClaimsContext _claimsContext;
-    private readonly ILogger<CoversController> _logger;
+    private readonly ILogger _logger;
     private readonly Auditer _auditer;
 
     public CoversController(ClaimsContext claimsContext, AuditContext auditContext, ILogger<CoversController> logger)
@@ -19,29 +20,24 @@ public class CoversController : ControllerBase
         _auditer = new Auditer(auditContext);
     }
 
-    [HttpPost("compute")]
-    public async Task<ActionResult> ComputePremiumAsync(DateTime startDate, DateTime endDate, CoverType coverType)
-    {
-        return Ok(ComputePremium(startDate, endDate, coverType));
-    }
-
     [HttpGet]
-    public async Task<ActionResult<IEnumerable<Cover>>> GetAsync()
+    public async Task<ActionResult<IEnumerable<CoverDto>>> GetAsync()
     {
         var results = await _claimsContext.Covers.ToListAsync();
         return Ok(results);
     }
 
     [HttpGet("{id}")]
-    public async Task<ActionResult<Cover>> GetAsync(string id)
+    public async Task<ActionResult<CoverDto>> GetAsync(string id)
     {
         var results = await _claimsContext.Covers.ToListAsync();
         return Ok(results.SingleOrDefault(cover => cover.Id == id));
     }
 
     [HttpPost]
-    public async Task<ActionResult> CreateAsync(Cover cover)
+    public async Task<ActionResult> CreateAsync(NewCoverDto request)
     {
+        var cover = new Cover();
         cover.Id = Guid.NewGuid().ToString();
         cover.Premium = ComputePremium(cover.StartDate, cover.EndDate, cover.Type);
         _claimsContext.Covers.Add(cover);

@@ -1,7 +1,6 @@
 using Claims.Auditing;
+using Claims.Controllers.Models;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
-using MongoDB.EntityFrameworkCore.Extensions;
 
 
 namespace Claims.Controllers
@@ -22,14 +21,19 @@ namespace Claims.Controllers
         }
 
         [HttpGet]
-        public async Task<IEnumerable<Claim>> GetAsync()
+        public async Task<ActionResult<IEnumerable<ClaimDto>>> GetAsync()
         {
-            return await _claimsContext.GetClaimsAsync();
+            IEnumerable<Claim> claims = await _claimsContext.GetClaimsAsync();
+            return Ok(claims);
         }
 
         [HttpPost]
-        public async Task<ActionResult> CreateAsync(Claim claim)
+        public async Task<ActionResult<ClaimDto>> CreateAsync(NewClaimDto request)
         {
+            var claim = new Claim
+            {
+                Name = request.Name,
+            };
             claim.Id = Guid.NewGuid().ToString();
             await _claimsContext.AddItemAsync(claim);
             _auditer.AuditClaim(claim.Id, "POST");
@@ -37,63 +41,18 @@ namespace Claims.Controllers
         }
 
         [HttpDelete("{id}")]
-        public async Task DeleteAsync(string id)
+        public async Task<ActionResult> DeleteAsync(string id)
         {
             _auditer.AuditClaim(id, "DELETE");
             await _claimsContext.DeleteItemAsync(id);
+            return NoContent();
         }
 
         [HttpGet("{id}")]
-        public async Task<Claim> GetAsync(string id)
+        public async Task<ActionResult<ClaimDto>> GetAsync(string id)
         {
-            return await _claimsContext.GetClaimAsync(id);
-        }
-    }
-
-    public class ClaimsContext : DbContext
-    {
-
-        private DbSet<Claim> Claims { get; init; }
-        public DbSet<Cover>  Covers { get; init; }
-
-        public ClaimsContext(DbContextOptions options)
-            : base(options)
-        {
-        }
-
-        protected override void OnModelCreating(ModelBuilder modelBuilder)
-        {
-            base.OnModelCreating(modelBuilder);
-            modelBuilder.Entity<Claim>().ToCollection("claims");
-            modelBuilder.Entity<Cover>().ToCollection("covers");
-        }
-
-        public async Task<IEnumerable<Claim>> GetClaimsAsync()
-        {
-            return await Claims.ToListAsync();
-        }
-
-        public async Task<Claim> GetClaimAsync(string id)
-        {
-            return await Claims
-                .Where(claim => claim.Id == id)
-                .SingleOrDefaultAsync();
-        }
-
-        public async Task AddItemAsync(Claim item)
-        {
-            Claims.Add(item);
-            await SaveChangesAsync();
-        }
-
-        public async Task DeleteItemAsync(string id)
-        {
-            var claim = await GetClaimAsync(id);
-            if (claim is not null)
-            {
-                Claims.Remove(claim);
-                await SaveChangesAsync();
-            }
+            var claim = await _claimsContext.GetClaimAsync(id);
+            return Ok(claim);
         }
     }
 }

@@ -1,10 +1,8 @@
-using System.Text.Json.Serialization;
-using Claims;
 using Claims.Auditing;
 using Claims.Controllers;
 using Microsoft.EntityFrameworkCore;
-using MongoDB.Bson.Serialization;
 using MongoDB.Driver;
+using System.Text.Json.Serialization;
 
 
 var builder = WebApplication.CreateBuilder(args);
@@ -16,6 +14,9 @@ builder.Services
     {
         x.JsonSerializerOptions.Converters.Add(new JsonStringEnumConverter());
     });
+
+var environmentName = builder.Environment.EnvironmentName;
+builder.Configuration.AddJsonFile($"appsettings.{environmentName}.json", optional: true);
 
 builder.Services.AddDbContext<AuditContext>(options => options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
 builder.Services.AddDbContext<ClaimsContext>(
