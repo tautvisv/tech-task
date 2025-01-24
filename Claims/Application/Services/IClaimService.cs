@@ -1,7 +1,8 @@
 ﻿using Azure.Core;
+using Claims.Application.Models;
 using Claims.Domain.Models;
 
-namespace Claims.Domain.Services
+namespace Claims.Application.Services
 {
     public interface IClaimService
     {

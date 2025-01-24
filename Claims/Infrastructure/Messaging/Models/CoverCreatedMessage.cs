@@ -2,11 +2,11 @@
 
 namespace Claims.Infrastructure.Messaging.Models
 {
-    public class ItemDeletedMessage: INotification
+    public class CoverCreatedMessage: INotification
     {
         public string Id { get; }
 
-        public ItemDeletedMessage(string id)
+        public CoverCreatedMessage(string id)
         {
             if (string.IsNullOrEmpty(id))
             {

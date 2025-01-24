@@ -1,6 +1,7 @@
-﻿using Claims.Domain.Models;
+﻿using Claims.Application.Models;
+using Claims.Domain.Models;
 
-namespace Claims.Domain.Services
+namespace Claims.Application.Services
 {
     // It is possible to have a generic interface and use it for covers and claims but code is a bit simpler with interfaces which are duplicated.
     // Non generic interface gives a bit better code readability and simplicity.

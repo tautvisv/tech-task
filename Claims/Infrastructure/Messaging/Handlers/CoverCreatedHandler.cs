@@ -3,18 +3,18 @@ using MediatR;
 
 namespace Claims.Infrastructure.Messaging.Handlers
 {
-    public class ItemCreatedHandler : INotificationHandler<ItemCreatedMessage>
+    public class CoverCreatedHandler : INotificationHandler<CoverCreatedMessage>
     {
         private readonly Auditer _auditer;
 
-        public ItemCreatedHandler(Auditer auditer)
+        public CoverCreatedHandler(Auditer auditer)
         {
             _auditer = auditer ?? throw new ArgumentNullException(nameof(auditer));
         }
 
-        public Task Handle(ItemCreatedMessage request, CancellationToken cancellationToken)
+        public Task Handle(CoverCreatedMessage request, CancellationToken cancellationToken)
         {
-            _auditer.AuditClaim(request.Id, "POST");
+            _auditer.AuditCover(request.Id, "POST");
             return Task.CompletedTask;
         }
     }

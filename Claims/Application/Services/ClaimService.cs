@@ -1,8 +1,9 @@
-﻿using Claims.Domain.Models;
+﻿using Claims.Application.Models;
+using Claims.Domain.Models;
 using Claims.Infrastructure.Persistance;
 using Claims.Utils;
 
-namespace Claims.Domain.Services
+namespace Claims.Application.Services
 {
     public class ClaimService : IClaimService
     {

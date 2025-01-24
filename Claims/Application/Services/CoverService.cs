@@ -1,11 +1,12 @@
-﻿using Claims.Domain.Models;
-using Claims.Domain.Repositories;
+﻿using Claims.Application.Models;
+using Claims.Application.Repositories;
+using Claims.Domain.Models;
 using Claims.Infrastructure;
 using Claims.Infrastructure.Persistance;
 
-namespace Claims.Domain.Services
+namespace Claims.Application.Services
 {
-    public class CoverService :ICoverService
+    public class CoverService : ICoverService
     {
         private readonly Auditer _auditer;
         private readonly IPremiumService _premiumService;

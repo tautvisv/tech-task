@@ -1,6 +1,6 @@
 ﻿using Claims.Domain.Models;
 
-namespace Claims.Domain.Services
+namespace Claims.Application.Services
 {
     public interface IPremiumService
     {

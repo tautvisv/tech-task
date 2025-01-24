@@ -1,7 +1,8 @@
 using AutoMapper;
+using Claims.Application.Models;
+using Claims.Application.Services;
 using Claims.Controllers.Models;
 using Claims.Domain.Models;
-using Claims.Domain.Services;
 using Microsoft.AspNetCore.Mvc;
 using Swashbuckle.AspNetCore.Annotations;
 

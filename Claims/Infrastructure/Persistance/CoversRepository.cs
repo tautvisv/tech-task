@@ -1,5 +1,5 @@
-﻿using Claims.Domain.Models;
-using Claims.Domain.Repositories;
+﻿using Claims.Application.Repositories;
+using Claims.Domain.Models;
 using Microsoft.EntityFrameworkCore;
 
 namespace Claims.Infrastructure.Persistance

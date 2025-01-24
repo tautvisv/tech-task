@@ -1,6 +1,6 @@
-﻿namespace Claims.Domain.Services
+﻿namespace Claims.Application.Services
 {
-    public interface IAuditPublisher
+    public interface IAuditClaimPublisher
     {
         Task PublishClaimCreatedAsync(string id);
         Task PublishClaimDeletedAsync(string id);

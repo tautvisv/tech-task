@@ -1,5 +1,5 @@
+using Claims.Application.Services;
 using Claims.Domain.Models;
-using Claims.Domain.Services;
 using Microsoft.AspNetCore.Mvc;
 using Swashbuckle.AspNetCore.Annotations;
 

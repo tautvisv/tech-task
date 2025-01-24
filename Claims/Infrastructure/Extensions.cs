@@ -1,12 +1,11 @@
-﻿using Claims.Domain.Models;
-using Claims.Domain.Repositories;
-using Claims.Domain.Services;
-using Claims.Infrastructure;
+﻿using Claims.Application.Repositories;
+using Claims.Application.Services;
+using Claims.Domain.Models;
 using Claims.Infrastructure.Messaging;
 using Claims.Infrastructure.Persistance;
 using Claims.Utils;
 
-namespace Claims
+namespace Claims.Infrastructure
 {
     public static class Extensions
     {
@@ -14,10 +13,12 @@ namespace Claims
         {
             services.AddSingleton<IDateTimeService, UtcDateTimeService>();
             services.AddBackgroundServices();
-            services.AddScoped<IAuditPublisher, AuditPublisher>();
+            services.AddScoped<AuditPublisher>();
+            services.AddScoped<IAuditClaimPublisher>(x => x.GetService<AuditPublisher>()!);
+            services.AddScoped<IAuditCoverPublisher>(x => x.GetService<AuditPublisher>()!);
 
             services.AddScoped<Auditer>();
-            
+
             services.AddScoped<IRepository<Claim>, ClaimsRepository>();
             services.AddScoped<IRepository<Cover>, CoversRepository>();
 

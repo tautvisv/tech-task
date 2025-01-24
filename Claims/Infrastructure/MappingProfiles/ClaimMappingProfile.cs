@@ -1,8 +1,9 @@
 ﻿using AutoMapper;
+using Claims.Application.Models;
 using Claims.Controllers.Models;
 using Claims.Domain.Models;
 
-namespace Claims.MappingProfiles
+namespace Claims.Infrastructure.MappingProfiles
 {
     public class ClaimMappingProfile : Profile
     {

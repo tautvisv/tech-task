@@ -1,4 +1,4 @@
-using Claims;
+using Claims.Infrastructure;
 using Claims.Infrastructure.Middleware;
 using Claims.Infrastructure.Persistance;
 using Microsoft.EntityFrameworkCore;

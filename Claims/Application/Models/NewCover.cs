@@ -1,4 +1,6 @@
-﻿namespace Claims.Domain.Models;
+﻿using Claims.Domain.Models;
+
+namespace Claims.Application.Models;
 
 public class NewCover
 {
