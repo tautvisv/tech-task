@@ -1,12 +1,20 @@
 ﻿using Claims.Domain.Models;
+using System.ComponentModel.DataAnnotations;
 
 namespace Claims.Controllers.Models
 {
     public class NewClaimDto
     {
-        public string CoverId { get; set; }
-        public string Name { get; set; }
-        public ClaimType Type { get; set; }
-        public decimal DamageCost { get; set; }
+        [Required]
+        public string? CoverId { get; set; }
+
+        [Required]
+        public string? Name { get; set; }
+
+        [Required]
+        public ClaimType? Type { get; set; }
+
+        [Required]
+        public decimal? DamageCost { get; set; }
     }
 }

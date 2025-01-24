@@ -4,6 +4,7 @@ using Claims.Application.Services;
 using Claims.Controllers.Models;
 using Claims.Domain.Models;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore.Metadata.Internal;
 using Swashbuckle.AspNetCore.Annotations;
 
 namespace Claims.Controllers
@@ -43,6 +44,10 @@ namespace Claims.Controllers
         [SwaggerOperation(Summary = "Create a new claim", Description = "Creates a new claim and returns the created claim details.")]
         public async Task<ActionResult<ClaimDto>> CreateAsync(NewClaimDto request)
         {
+            if (!ModelState.IsValid)
+            {
+                return BadRequest();
+            }
             var newClaim = _mapper.Map<NewClaimDto, NewClaim>(request);
             var claim = await _service.CreateClaimAsync(newClaim);
             var result = _mapper.Map<Claim, ClaimDto>(claim);

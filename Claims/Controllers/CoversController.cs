@@ -43,6 +43,10 @@ public class CoversController : ControllerBase
     [SwaggerOperation(Summary = "Create a new cover", Description = "Creates a new cover and returns the created cover details.")]
     public async Task<ActionResult<CoverDto>> CreateAsync(NewCoverDto request)
     {
+        if (!ModelState.IsValid)
+        {
+            return BadRequest();
+        }
         var newCover = _mapper.Map<NewCoverDto, NewCover>(request);
         var cover = await _service.CreateCoverAsync(newCover);
         var result = _mapper.Map<Cover, CoverDto>(cover);

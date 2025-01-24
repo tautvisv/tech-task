@@ -26,7 +26,7 @@ namespace Claims.Infrastructure.Middleware
                 _logger.LogWarning(ex, "EntityNotFoundException encountered. Entity ID: {entityId}", ex.EntityId);
                 await PrepareErrorResponse(context, ex.Message, HttpStatusCode.NotFound);
             }
-            catch (DomainException ex)
+            catch (DomainValidationException ex)
             {
                 _logger.LogWarning(ex, "DomainException encountered.");
                 await PrepareErrorResponse(context, ex.Message, HttpStatusCode.BadRequest);

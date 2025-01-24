@@ -1,11 +1,17 @@
 ﻿using Claims.Domain.Models;
+using System.ComponentModel.DataAnnotations;
 
 namespace Claims.Controllers.Models
 {
     public class NewCoverDto
     {
-        public DateTime StartDate { get; set; }
-        public DateTime EndDate { get; set; }
-        public CoverType Type { get; set; }
+        [Required]
+        public DateTime? StartDate { get; set; }
+
+        [Required]
+        public DateTime? EndDate { get; set; }
+
+        [Required]
+        public CoverType? Type { get; set; }
     }
 }
