@@ -3,6 +3,7 @@ using Claims.Domain.Repositories;
 using Claims.Domain.Services;
 using Claims.Infrastructure;
 using Claims.Infrastructure.Messaging;
+using Claims.Infrastructure.Persistance;
 using Claims.Utils;
 
 namespace Claims

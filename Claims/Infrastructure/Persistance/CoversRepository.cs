@@ -1,8 +1,8 @@
 ﻿using Claims.Domain.Models;
-using Claims.Infrastructure.Persistance;
+using Claims.Domain.Repositories;
 using Microsoft.EntityFrameworkCore;
 
-namespace Claims.Domain.Repositories
+namespace Claims.Infrastructure.Persistance
 {
     public class CoversRepository : IRepository<Cover>
     {
