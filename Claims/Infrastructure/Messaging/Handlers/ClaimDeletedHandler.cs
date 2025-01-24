@@ -14,7 +14,7 @@ namespace Claims.Infrastructure.Messaging.Handlers
 
         public Task Handle(ClaimDeletedMessage request, CancellationToken cancellationToken)
         {
-            _auditer.AuditClaim(request.Id, "DELETE");
+            _auditer.AuditClaim(request.Id, HttpTypeEnum.DELETE);
             return Task.CompletedTask;
         }
     }

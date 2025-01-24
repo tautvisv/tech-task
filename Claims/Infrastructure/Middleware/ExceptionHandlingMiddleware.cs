@@ -23,18 +23,22 @@ namespace Claims.Infrastructure.Middleware
             }
             catch (EntityNotFoundException ex)
             {
-                _logger.LogInformation(ex, "EntityNotFoundException encountered. Entity ID: {entityId}", ex.EntityId);
-                context.Response.StatusCode = (int)HttpStatusCode.NotFound;
-                var response = CreateErrorResponseMessage(ex.Message);
-                await context.Response.WriteAsync(response);
+                _logger.LogWarning(ex, "EntityNotFoundException encountered. Entity ID: {entityId}", ex.EntityId);
+                await PrepareErrorResponse(context, ex.Message, HttpStatusCode.NotFound);
             }
             catch (DomainException ex)
             {
-                _logger.LogInformation(ex, "DomainException encountered.");
-                context.Response.StatusCode = (int)HttpStatusCode.BadRequest;
-                var response = CreateErrorResponseMessage(ex.Message);
-                await context.Response.WriteAsync(response);
+                _logger.LogWarning(ex, "DomainException encountered.");
+                await PrepareErrorResponse(context, ex.Message, HttpStatusCode.BadRequest);
             }
+        }
+
+        private static async Task PrepareErrorResponse(HttpContext context, string message, HttpStatusCode responseCode)
+        {
+            var response = CreateErrorResponseMessage(message);
+            context.Response.StatusCode = (int)HttpStatusCode.NotFound;
+            context.Response.ContentType = "application/json";
+            await context.Response.WriteAsync(response);
         }
 
         private static string CreateErrorResponseMessage(string errorMessage)

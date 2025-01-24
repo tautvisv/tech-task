@@ -1,4 +1,5 @@
 ﻿using Claims.Application.Repositories;
+using Claims.Domain.Exceptions;
 using Claims.Domain.Models;
 using Microsoft.EntityFrameworkCore;
 
@@ -6,6 +7,8 @@ namespace Claims.Infrastructure.Persistance
 {
     public class ClaimsRepository : IRepository<Claim>
     {
+        // If application is big enough then we should use database models when saving.
+        // Right now it is sufficient to use domain models for persistance.
         private readonly ClaimsContext _claimsContext;
         private readonly DbSet<Claim> _claims;
 
@@ -25,12 +28,13 @@ namespace Claims.Infrastructure.Persistance
             var claim = await _claims
                 .Where(claim => claim.Id == id)
                 .SingleOrDefaultAsync();
-
-            if (claim is not null)
+            if (claim is null)
             {
-                _claims.Remove(claim);
-                _claimsContext.SaveChanges();
+                throw new EntityNotFoundException("Claim not found", id);
             }
+
+            _claims.Remove(claim);
+            _claimsContext.SaveChanges();
         }
 
         public async Task<IEnumerable<Claim>> GetAllAsync()
@@ -44,6 +48,10 @@ namespace Claims.Infrastructure.Persistance
             var claim = await _claims
                 .Where(claim => claim.Id == id)
                 .SingleOrDefaultAsync();
+            if (claim is null)
+            {
+                throw new EntityNotFoundException("Claim not found", id);
+            }
             return claim;
         }
     }

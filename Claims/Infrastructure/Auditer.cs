@@ -1,4 +1,5 @@
-﻿using Claims.Infrastructure.Persistance;
+﻿using Claims.Infrastructure.Messaging.Models;
+using Claims.Infrastructure.Persistance;
 using Claims.Infrastructure.Persistance.Models;
 using Claims.Utils;
 
@@ -15,12 +16,12 @@ namespace Claims.Infrastructure
             _dateTimeService = dateTimeService ?? throw new ArgumentNullException(nameof(dateTimeService));
         }
 
-        public void AuditClaim(string id, string httpRequestType)
+        public void AuditClaim(string id, HttpTypeEnum httpRequestType)
         {
             var claimAudit = new ClaimAudit()
             {
                 Created = _dateTimeService.GetCurrentTime(),
-                HttpRequestType = httpRequestType,
+                HttpRequestType = httpRequestType.ToString(),
                 ClaimId = id
             };
 
@@ -28,12 +29,12 @@ namespace Claims.Infrastructure
             _auditContext.SaveChanges();
         }
 
-        public void AuditCover(string id, string httpRequestType)
+        public void AuditCover(string id, HttpTypeEnum httpRequestType)
         {
             var coverAudit = new CoverAudit()
             {
                 Created = _dateTimeService.GetCurrentTime(),
-                HttpRequestType = httpRequestType,
+                HttpRequestType = httpRequestType.ToString(),
                 CoverId = id
             };
 

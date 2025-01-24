@@ -8,31 +8,36 @@ namespace Claims.Application.Services
 {
     public class CoverService : ICoverService
     {
-        private readonly Auditer _auditer;
+        private readonly ILogger _logger;
         private readonly IPremiumService _premiumService;
         private readonly IRepository<Cover> _coverRepository;
+        private readonly IAuditCoverPublisher _auditCoverPublisher;
 
-        public CoverService(ClaimsContext claimsContext, Auditer auditer, IPremiumService premiumService, IRepository<Cover> coverRepository)
+        public CoverService(ILogger<CoverService> logger, IPremiumService premiumService, IRepository<Cover> coverRepository, IAuditCoverPublisher auditCoverPublisher)
         {
-            _auditer = auditer ?? throw new ArgumentNullException(nameof(auditer));
+            _logger = logger ?? throw new ArgumentNullException(nameof(logger));
             _premiumService = premiumService ?? throw new ArgumentNullException(nameof(premiumService));
-            _coverRepository = coverRepository;
+            _coverRepository = coverRepository ?? throw new ArgumentNullException(nameof(coverRepository));
+            _auditCoverPublisher = auditCoverPublisher ?? throw new ArgumentNullException(nameof(auditCoverPublisher));
         }
 
         public async Task<Cover> GetCoverAsync(string id)
         {
+            _logger.LogInformation("Getting {id} cover", id);
             var cover = await _coverRepository.GetByIdAsync(id);
             return cover;
         }
 
         public async Task<IEnumerable<Cover>> GetCoversAsync()
         {
+            _logger.LogInformation("Getting all covers");
             var covers = await _coverRepository.GetAllAsync();
             return covers;
         }
 
         public async Task<Cover> CreateCoverAsync(NewCover newCover)
         {
+            _logger.LogInformation("Creating new '{coverType}' cover ", newCover.Type);
             var id = Guid.NewGuid().ToString();
             var premium = await _premiumService.ComputePremiumAsync(newCover.StartDate, newCover.EndDate, newCover.Type);
             var cover = new Cover()
@@ -44,14 +49,15 @@ namespace Claims.Application.Services
                 Type = newCover.Type
             };
             await _coverRepository.CreateAsync(cover);
-            _auditer.AuditCover(cover.Id, "POST");
+            await _auditCoverPublisher.PublishCoverCreatedAsync(cover.Id);
             return cover;
         }
 
         public async Task DeleteCoverAsync(string id)
         {
+            _logger.LogInformation("Deleting {id} cover", id);
             await _coverRepository.DeleteAsync(id);
-            _auditer.AuditCover(id, "DELETE");
+            await _auditCoverPublisher.PublishCoverDeletedAsync(id);
         }
     }
 }

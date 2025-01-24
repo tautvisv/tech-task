@@ -14,7 +14,7 @@ namespace Claims.Infrastructure.Messaging.Handlers
 
         public Task Handle(ClaimCreatedMessage request, CancellationToken cancellationToken)
         {
-            _auditer.AuditClaim(request.Id, "POST");
+            _auditer.AuditClaim(request.Id, HttpTypeEnum.POST);
             return Task.CompletedTask;
         }
     }

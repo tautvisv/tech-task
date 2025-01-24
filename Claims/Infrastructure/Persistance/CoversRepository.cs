@@ -1,4 +1,5 @@
 ﻿using Claims.Application.Repositories;
+using Claims.Domain.Exceptions;
 using Claims.Domain.Models;
 using Microsoft.EntityFrameworkCore;
 
@@ -23,11 +24,12 @@ namespace Claims.Infrastructure.Persistance
         public async Task DeleteAsync(string id)
         {
             var cover = await _claimsContext.Covers.Where(cover => cover.Id == id).SingleOrDefaultAsync();
-            if (cover is not null)
+            if (cover is null)
             {
-                _covers.Remove(cover);
-                await _claimsContext.SaveChangesAsync();
+                throw new EntityNotFoundException("Cover not found", id);
             }
+            _covers.Remove(cover);
+            await _claimsContext.SaveChangesAsync();
         }
 
         public async Task<IEnumerable<Cover>> GetAllAsync()
@@ -38,7 +40,10 @@ namespace Claims.Infrastructure.Persistance
 
         public async Task<Cover> GetByIdAsync(string id)
         {
-            var cover = await _covers.SingleOrDefaultAsync(cover => cover.Id == id);
+            var cover = await _covers.SingleOrDefaultAsync(cover => cover.Id == id); if (cover is null)
+            {
+                throw new EntityNotFoundException("Cover not found", id);
+            }
             return cover;
         }
     }

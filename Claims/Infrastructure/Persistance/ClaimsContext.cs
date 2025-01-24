@@ -28,9 +28,10 @@ namespace Claims.Infrastructure.Persistance
 
         public async Task<Claim> GetClaimAsync(string id)
         {
-            return await Claims
+            var claim = await Claims
                 .Where(claim => claim.Id == id)
                 .SingleOrDefaultAsync();
+            return claim;
         }
 
         public async Task AddItemAsync(Claim item)
