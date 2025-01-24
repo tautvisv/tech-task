@@ -1,4 +1,5 @@
 using Claims;
+using Claims.Infrastructure.Middleware;
 using Claims.Infrastructure.Persistance;
 using Microsoft.EntityFrameworkCore;
 using MongoDB.Driver;
@@ -51,6 +52,8 @@ app.UseHttpsRedirection();
 app.UseAuthorization();
 
 app.MapControllers();
+
+app.UseExceptionHandlingMiddleware();
 
 using (var scope = app.Services.CreateScope())
 {
