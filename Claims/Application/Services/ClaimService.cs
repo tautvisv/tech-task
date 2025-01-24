@@ -37,22 +37,16 @@ namespace Claims.Application.Services
 
         public async Task<Claim> CreateClaimAsync(NewClaim newClaim)
         {
-            _logger.LogInformation("Creating new claim for {coverId} cover", newClaim.CoverId);
-            var id = Guid.NewGuid().ToString();
-            var created = _dateTimeService.GetCurrentTime();
-            var claim = new Claim
+            if (newClaim is null)
             {
-                Id = id,
-                Name = newClaim.Name,
-                CoverId = newClaim.CoverId,
-                // it makes more sense if system is setting this date
-                // in the end it depends on application requirments
-                Created = created,
-                Type = newClaim.Type,
-                DamageCost = newClaim.DamageCost,
-            };
+                throw new ArgumentNullException(nameof(newClaim));
+            }
+
+            _logger.LogInformation("Creating new claim for {coverId} cover", newClaim.CoverId);
+            var created = _dateTimeService.GetCurrentTime();
+            var claim = Claim.Create(newClaim.CoverId, created, newClaim.Name, newClaim.Type, newClaim.DamageCost);
             await _repository.CreateAsync(claim);
-            await _auditPublisher.PublishClaimCreatedAsync(id);
+            await _auditPublisher.PublishClaimCreatedAsync(claim.Id);
             return claim;
         }
 

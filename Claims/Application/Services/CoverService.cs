@@ -35,19 +35,16 @@ namespace Claims.Application.Services
             return covers;
         }
 
-        public async Task<Cover> CreateCoverAsync(NewCover newCover)
+        public async Task<Cover> CreateCoverAsync(NewCover newClaim)
         {
-            _logger.LogInformation("Creating new '{coverType}' cover ", newCover.Type);
-            var id = Guid.NewGuid().ToString();
-            var premium = await _premiumService.ComputePremiumAsync(newCover.StartDate, newCover.EndDate, newCover.Type);
-            var cover = new Cover()
+            if (newClaim is null)
             {
-                Id = id,
-                Premium = premium,
-                EndDate = newCover.EndDate,
-                StartDate = newCover.StartDate,
-                Type = newCover.Type
-            };
+                throw new ArgumentNullException(nameof(newClaim));
+            }
+
+            _logger.LogInformation("Creating new '{coverType}' cover ", newClaim.Type);
+            var premium = await _premiumService.ComputePremiumAsync(newClaim.StartDate, newClaim.EndDate, newClaim.Type);
+            var cover = Cover.Create(newClaim.StartDate, newClaim.EndDate, newClaim.Type, premium);
             await _coverRepository.CreateAsync(cover);
             await _auditCoverPublisher.PublishCoverCreatedAsync(cover.Id);
             return cover;
