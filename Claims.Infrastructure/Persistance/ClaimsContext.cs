@@ -6,8 +6,8 @@ namespace Claims.Infrastructure.Persistance
 {
     public class ClaimsContext : DbContext
     {
-        public DbSet<Claim> Claims { get; init; }
-        public DbSet<Cover> Covers { get; init; }
+        public DbSet<ClaimEntity> Claims { get; init; }
+        public DbSet<CoverEntity> Covers { get; init; }
 
         public ClaimsContext(DbContextOptions options)
             : base(options)
@@ -21,12 +21,12 @@ namespace Claims.Infrastructure.Persistance
             modelBuilder.Entity<Cover>().ToCollection("covers");
         }
 
-        public async Task<IEnumerable<Claim>> GetClaimsAsync()
+        public async Task<IEnumerable<ClaimEntity>> GetClaimsAsync()
         {
             return await Claims.ToListAsync();
         }
 
-        public async Task<Claim> GetClaimAsync(string id)
+        public async Task<ClaimEntity> GetClaimAsync(string id)
         {
             var claim = await Claims
                 .Where(claim => claim.Id == id)
@@ -34,7 +34,7 @@ namespace Claims.Infrastructure.Persistance
             return claim;
         }
 
-        public async Task AddItemAsync(Claim item)
+        public async Task AddItemAsync(ClaimEntity item)
         {
             Claims.Add(item);
             await SaveChangesAsync();

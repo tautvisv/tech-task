@@ -1,4 +1,5 @@
 ﻿using Claims.Domain.Models;
+using Microsoft.Extensions.Logging;
 
 namespace Claims.Application.Services
 {

@@ -20,7 +20,7 @@ services
 var environmentName = builder.Environment.EnvironmentName;
 builder.Configuration.AddJsonFile($"appsettings.{environmentName}.json", optional: true);
 
-services.AddAutoMapper(typeof(Program).Assembly);
+services.AddAutoMapper(typeof(Program).Assembly, typeof(AuditContext).Assembly);
 
 services.AddDbContext<AuditContext>(options => options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
 services.AddDbContext<ClaimsContext>(

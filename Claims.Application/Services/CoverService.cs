@@ -2,9 +2,8 @@
 using Claims.Application.Repositories;
 using Claims.Domain.Exceptions;
 using Claims.Domain.Models;
-using Claims.Infrastructure;
-using Claims.Infrastructure.Persistance;
 using Claims.Utils;
+using Microsoft.Extensions.Logging;
 
 namespace Claims.Application.Services
 {
@@ -53,10 +52,10 @@ namespace Claims.Application.Services
             {
                 throw new DomainValidationException("StartDate cannot be in the past", nameof(newClaim.StartDate));
             }
-            if (newClaim.StartDate.AddYears(1).CompareTo(newClaim.EndDate) > 0)
-            {
-                throw new DomainValidationException("Total insurance period cannot exceed 1 year", nameof(newClaim.StartDate));
-            }
+            //if (newClaim.StartDate.AddYears(1).CompareTo(newClaim.EndDate) > 0)
+            //{
+            //    throw new DomainValidationException("Total insurance period cannot exceed 1 year", nameof(newClaim.StartDate));
+            //}
 
             var premium = await _premiumService.ComputePremiumAsync(newClaim.StartDate, newClaim.EndDate, newClaim.Type);
             var cover = Cover.Create(newClaim.StartDate, newClaim.EndDate, newClaim.Type, premium);

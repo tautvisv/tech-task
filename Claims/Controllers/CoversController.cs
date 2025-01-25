@@ -9,7 +9,7 @@ using Swashbuckle.AspNetCore.Annotations;
 namespace Claims.Controllers;
 
 [ApiController]
-[Route("[controller]")]
+[Route("covers")]
 public class CoversController : ControllerBase
 {
     private readonly IMapper _mapper;

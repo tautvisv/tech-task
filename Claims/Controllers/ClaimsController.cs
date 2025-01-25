@@ -4,13 +4,13 @@ using Claims.Application.Services;
 using Claims.Controllers.Models;
 using Claims.Domain.Models;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore.Metadata.Internal;
 using Swashbuckle.AspNetCore.Annotations;
 
 namespace Claims.Controllers
 {
+    // It depends on aplication requirements but it would make more sense to have route covers/{coverId}/claims/ for this controller
     [ApiController]
-    [Route("[controller]")]
+    [Route("claims")]
     public class ClaimsController : ControllerBase
     {
         private readonly IClaimService _service;

@@ -2,8 +2,8 @@
 using Claims.Application.Repositories;
 using Claims.Domain.Exceptions;
 using Claims.Domain.Models;
-using Claims.Infrastructure.Persistance;
 using Claims.Utils;
+using Microsoft.Extensions.Logging;
 
 namespace Claims.Application.Services
 {
@@ -15,7 +15,7 @@ namespace Claims.Application.Services
         private readonly IRepository<Claim> _repository;
         private readonly IRepository<Cover> _coverRepository;
 
-        public ClaimService(ILogger<ClaimService> logger, ClaimsContext claimsContext, IAuditClaimPublisher auditPublisher, IDateTimeService dateTimeService, IRepository<Claim> repository, IRepository<Cover> coverRepository)
+        public ClaimService(ILogger<ClaimService> logger, IAuditClaimPublisher auditPublisher, IDateTimeService dateTimeService, IRepository<Claim> repository, IRepository<Cover> coverRepository)
         {
             _logger = logger ?? throw new ArgumentNullException(nameof(logger));
             _auditPublisher = auditPublisher ?? throw new ArgumentNullException(nameof(auditPublisher));
@@ -47,14 +47,12 @@ namespace Claims.Application.Services
 
             _logger.LogInformation("Creating new claim for {coverId} cover", newClaim.CoverId);
             var relatedCover = await _coverRepository.GetByIdAsync(newClaim.CoverId);
-            var createdDateTime = _dateTimeService.GetCurrentDateTime();
-            var createdDate = DateOnly.FromDateTime(createdDateTime);
-            if (!relatedCover.IsClaimDateValid(createdDate))
+            if (!relatedCover.IsClaimDateValid(newClaim.CreatedDate))
             {
-                throw new DomainValidationException($"Created date must be within the period({relatedCover.StartDate}-{relatedCover.EndDate}) of the related Cover.", nameof(createdDate));
+                throw new DomainValidationException($"Created date must be within the period({relatedCover.StartDate}-{relatedCover.EndDate}) of the related Cover.", nameof(Claim.Created));
             }
 
-            var claim = Claim.Create(newClaim.CoverId, createdDate, newClaim.Name, newClaim.Type, newClaim.DamageCost);
+            var claim = Claim.Create(newClaim.CoverId, newClaim.CreatedDate, newClaim.Name, newClaim.Type, newClaim.DamageCost);
             await _repository.CreateAsync(claim);
             await _auditPublisher.PublishClaimCreatedAsync(claim.Id);
             return claim;

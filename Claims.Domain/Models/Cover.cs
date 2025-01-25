@@ -1,34 +1,14 @@
 using Claims.Domain.Exceptions;
-using MongoDB.Bson.Serialization.Attributes;
 
 namespace Claims.Domain.Models;
 
 public class Cover
 {
-    [BsonId]
     public string Id { get; private set; }
-
-    [BsonElement("startDate")]
-    [BsonDateTimeOptions(DateOnly = true)]
     public DateOnly StartDate { get; private set; }
-
-    [BsonElement("endDate")]
-    [BsonDateTimeOptions(DateOnly = true)]
     public DateOnly EndDate { get; private set; }
-
-    [BsonElement("claimType")]
     public CoverType Type { get; private set; }
-
-    [BsonElement("premium")]
     public decimal Premium { get; private set; }
-
-    // it is used by entity framework. Ideally it should not exist and entity framework should have its own models
-#pragma warning disable CS8618 // Non-nullable field must contain a non-null value when exiting constructor. Consider adding the 'required' modifier or declaring as nullable.
-    private Cover()
-#pragma warning restore CS8618 // Non-nullable field must contain a non-null value when exiting constructor. Consider adding the 'required' modifier or declaring as nullable.
-    {
-        
-    }
 
     private Cover(string id, DateOnly startDate, DateOnly endDate, CoverType type, decimal premium)
     {
@@ -54,8 +34,9 @@ public class Cover
         Premium = premium;
     }
 
-    public bool IsClaimDateValid(DateOnly date)
+    public bool IsClaimDateValid(DateTime datetime)
     {
+        var date = DateOnly.FromDateTime(datetime);
         return StartDate <= date && EndDate >= date;
     }
 

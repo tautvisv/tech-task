@@ -1,5 +1,4 @@
-﻿using Azure.Core;
-using Claims.Application.Models;
+﻿using Claims.Application.Models;
 using Claims.Domain.Models;
 
 namespace Claims.Application.Services

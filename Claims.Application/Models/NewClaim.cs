@@ -6,6 +6,7 @@ namespace Claims.Application.Models
     {
         public string CoverId { get; private set; }
         public string Name { get; private set; }
+        public DateTime CreatedDate { get; set; }
         public ClaimType Type { get; private set; }
         public decimal DamageCost { get; private set; }
     }

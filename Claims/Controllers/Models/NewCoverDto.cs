@@ -6,10 +6,10 @@ namespace Claims.Controllers.Models
     public class NewCoverDto
     {
         [Required]
-        public DateTime? StartDate { get; set; }
+        public DateOnly? StartDate { get; set; }
 
         [Required]
-        public DateTime? EndDate { get; set; }
+        public DateOnly? EndDate { get; set; }
 
         [Required]
         public CoverType? Type { get; set; }

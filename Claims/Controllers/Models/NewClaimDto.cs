@@ -15,6 +15,9 @@ namespace Claims.Controllers.Models
         public ClaimType? Type { get; set; }
 
         [Required]
+        public DateTime? CreatedDate{ get; set; }
+
+        [Required]
         public decimal? DamageCost { get; set; }
     }
 }
