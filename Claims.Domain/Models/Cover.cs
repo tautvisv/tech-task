@@ -1,4 +1,5 @@
 using Claims.Domain.Exceptions;
+using Claims.Domain.Utils;
 
 namespace Claims.Domain.Models;
 
@@ -37,7 +38,7 @@ public class Cover
     public bool IsClaimDateValid(DateTime datetime)
     {
         var date = DateOnly.FromDateTime(datetime);
-        return StartDate <= date && EndDate >= date;
+        return date.IsDateInRange(StartDate, EndDate);
     }
 
     public static Cover Create(DateOnly startDate, DateOnly endDate, CoverType type, decimal premium)
