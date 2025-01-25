@@ -1,10 +1,16 @@
-﻿using Claims.Domain.Models;
+﻿using Claims.Domain.Exceptions;
+using Claims.Domain.Models;
 using Microsoft.Extensions.Logging;
 
 namespace Claims.Application.Services
 {
     public class CoverPremiumService : IPremiumService
     {
+        private const decimal BaseDayRate = 1250;
+        private const decimal DefaultRate = 1.3m;
+        private const int FirstPeriod = 30;
+        private const int SecondPeriod = 30;
+
         private readonly ILogger _logger;
 
         public CoverPremiumService(ILogger<IPremiumService> logger)
@@ -25,36 +31,60 @@ namespace Claims.Application.Services
 
         private decimal ComputePremium(DateOnly startDate, DateOnly endDate, CoverType coverType)
         {
-            var multiplier = 1.3m;
-            if (coverType == CoverType.Yacht)
+            var totalDays = endDate.DayNumber - startDate.DayNumber;
+            if (totalDays < 0)
             {
-                multiplier = 1.1m;
+                throw new DomainValidationException("End date must be before start date", nameof(endDate));
             }
 
-            if (coverType == CoverType.PassengerShip)
-            {
-                multiplier = 1.2m;
-            }
-
-            if (coverType == CoverType.Tanker)
-            {
-                multiplier = 1.5m;
-            }
-
-            var premiumPerDay = 1250 * multiplier;
-            var insuranceLength = 1;//(endDate - startDate).TotalDays;
-            var totalPremium = 0m;
-
-            for (var i = 0; i < insuranceLength; i++)
-            {
-                if (i < 30) totalPremium += premiumPerDay;
-                if (i < 180 && coverType == CoverType.Yacht) totalPremium += premiumPerDay - premiumPerDay * 0.05m;
-                else if (i < 180) totalPremium += premiumPerDay - premiumPerDay * 0.02m;
-                if (i < 365 && coverType != CoverType.Yacht) totalPremium += premiumPerDay - premiumPerDay * 0.03m;
-                else if (i < 365) totalPremium += premiumPerDay - premiumPerDay * 0.08m;
-            }
-
+            var totalPremium = ComputeRate(totalDays, coverType) * BaseDayRate;
             return totalPremium;
+        }
+
+        private decimal ComputeRate(int numberOfDays, CoverType coverType)
+        {
+            var rates = Rates.GetRates(coverType);
+
+            var remainingDays = numberOfDays;
+            var firstLevelDays = remainingDays > FirstPeriod ? FirstPeriod : remainingDays;
+            remainingDays -= FirstPeriod;
+            var secondLevelDays = remainingDays > SecondPeriod ? SecondPeriod : Math.Max(0, remainingDays);
+            remainingDays -= SecondPeriod;
+            var thirdLevelDays = Math.Max(0, remainingDays);
+
+            var premiumRate = firstLevelDays * rates.FirstLevel + secondLevelDays * rates .SecondLevel + thirdLevelDays * rates.ThirdLevel;
+            return premiumRate;
+        }
+
+        private class Rates
+        {
+            private static readonly Rates Yacht = new Rates(1.1m, 5m, 3m);
+            private static readonly Rates PassangerShip = new Rates(1.2m, 0.98m, 0.99m);
+            private static readonly Rates Tanker = new Rates(1.5m, 0.98m, 0.99m);
+            private static readonly Rates Other = new Rates(1.3m, 0.98m, 0.99m);
+
+            public decimal FirstLevel { get; }
+            public decimal SecondLevel { get; }
+            public decimal ThirdLevel { get; }
+
+            private Rates(decimal firstLevel, decimal secondLevel, decimal thirdLevel)
+            {
+                FirstLevel = firstLevel;
+                // I have assumption that discount is applied from the first level price.
+                SecondLevel = firstLevel*secondLevel;
+                ThirdLevel = firstLevel*thirdLevel;
+            }
+
+            public static Rates GetRates(CoverType type)
+            {
+                switch (type)
+                {
+                    case CoverType.Yacht: return Yacht;
+                    case CoverType.PassengerShip: return PassangerShip;
+                    case CoverType.Tanker: return Tanker;
+                    // add other rates if required
+                    default: return Other;
+                }
         }
     }
 }
