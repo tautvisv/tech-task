@@ -7,9 +7,8 @@ namespace Claims.Application.Services
     public class CoverPremiumService : IPremiumService
     {
         private const decimal BaseDayRate = 1250;
-        private const decimal DefaultRate = 1.3m;
         private const int FirstPeriod = 30;
-        private const int SecondPeriod = 30;
+        private const int SecondPeriod = 150;
 
         private readonly ILogger _logger;
 
@@ -20,11 +19,11 @@ namespace Claims.Application.Services
 
         public Task<decimal> ComputePremiumAsync(DateOnly startDate, DateOnly endDate, CoverType coverType)
         {
-            _logger.LogInformation("Stating to calculate premium for {coverType}", coverType);
+            _logger.LogInformation("Stating to calculate premium for {coverType} from {startDate} to {endDate}", coverType, startDate, endDate);
 
             var value = ComputePremium(startDate, endDate, coverType);
 
-            _logger.LogInformation("Premium calculation finished for {coverType}", coverType);
+            _logger.LogInformation("Premium calculation finished. Value: {value}", value);
 
             return Task.FromResult(value);
         }
@@ -58,7 +57,7 @@ namespace Claims.Application.Services
 
         private class Rates
         {
-            private static readonly Rates Yacht = new Rates(1.1m, 5m, 3m);
+            private static readonly Rates Yacht = new Rates(1.1m, 0.95m, 0.97m);
             private static readonly Rates PassangerShip = new Rates(1.2m, 0.98m, 0.99m);
             private static readonly Rates Tanker = new Rates(1.5m, 0.98m, 0.99m);
             private static readonly Rates Other = new Rates(1.3m, 0.98m, 0.99m);
@@ -72,7 +71,7 @@ namespace Claims.Application.Services
                 FirstLevel = firstLevel;
                 // I have assumption that discount is applied from the first level price.
                 SecondLevel = firstLevel * secondLevel;
-                ThirdLevel = firstLevel * thirdLevel;
+                ThirdLevel = firstLevel * secondLevel * thirdLevel;
             }
 
             public static Rates GetRates(CoverType type)

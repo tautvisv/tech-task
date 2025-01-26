@@ -36,7 +36,7 @@ namespace Claims.Infrastructure.Middleware
         private static async Task PrepareErrorResponse(HttpContext context, string message, HttpStatusCode responseCode)
         {
             var response = CreateErrorResponseMessage(message);
-            context.Response.StatusCode = (int)HttpStatusCode.NotFound;
+            context.Response.StatusCode = (int)responseCode;
             context.Response.ContentType = "application/json";
             await context.Response.WriteAsync(response);
         }

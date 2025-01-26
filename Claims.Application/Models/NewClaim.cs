@@ -9,5 +9,16 @@ namespace Claims.Application.Models
         public DateTime CreatedDate { get; set; }
         public ClaimType Type { get; private set; }
         public decimal DamageCost { get; private set; }
+
+        private NewClaim() { }
+
+        public NewClaim(string coverId, string name, DateTime createdDate, ClaimType type, decimal damageCost)
+        {
+            CoverId = coverId;
+            Name = name;
+            CreatedDate = createdDate;
+            Type = type;
+            DamageCost = damageCost;
+        }
     }
 }
