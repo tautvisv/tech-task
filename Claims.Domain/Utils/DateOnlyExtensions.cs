@@ -4,7 +4,7 @@
     {
         public static bool IsDateInRange(this DateOnly currentDate, DateOnly startDate, DateOnly endDate)
         {
-            return currentDate >= startDate && startDate <= endDate;
+            return currentDate >= startDate && currentDate <= endDate;
         }
     }
 }

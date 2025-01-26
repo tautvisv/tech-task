@@ -52,7 +52,7 @@ namespace Claims.Application.Services
             remainingDays -= SecondPeriod;
             var thirdLevelDays = Math.Max(0, remainingDays);
 
-            var premiumRate = firstLevelDays * rates.FirstLevel + secondLevelDays * rates .SecondLevel + thirdLevelDays * rates.ThirdLevel;
+            var premiumRate = firstLevelDays * rates.FirstLevel + secondLevelDays * rates.SecondLevel + thirdLevelDays * rates.ThirdLevel;
             return premiumRate;
         }
 
@@ -71,8 +71,8 @@ namespace Claims.Application.Services
             {
                 FirstLevel = firstLevel;
                 // I have assumption that discount is applied from the first level price.
-                SecondLevel = firstLevel*secondLevel;
-                ThirdLevel = firstLevel*thirdLevel;
+                SecondLevel = firstLevel * secondLevel;
+                ThirdLevel = firstLevel * thirdLevel;
             }
 
             public static Rates GetRates(CoverType type)
@@ -85,6 +85,7 @@ namespace Claims.Application.Services
                     // add other rates if required
                     default: return Other;
                 }
+            }
         }
     }
 }
