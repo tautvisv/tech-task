@@ -53,7 +53,7 @@ namespace Claims.Application.Services
             {
                 throw new DomainValidationException("StartDate cannot be in the past", nameof(newClaim.StartDate));
             }
-            if (newClaim.EndDate.IsDateInRange(newClaim.StartDate, newClaim.StartDate.AddYears(1)))
+            if (!newClaim.EndDate.IsDateInRange(newClaim.StartDate, newClaim.StartDate.AddYears(1)))
             {
                 throw new DomainValidationException("Total insurance period cannot exceed 1 year", nameof(newClaim.StartDate));
             }
